@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Downloading</title>
+	</head>
+	<body>
+		<p id="download-status">
+
+		</p>
+		<br>
+		<a href="../cancel?token={{token}}" target="_blank">CANCEL</a>
+		<script>
+			const download_status = document.getElementById("download-status");
+			let id = 0;
+			function httpGet(theUrl) {
+				let xmlHttpReq = new XMLHttpRequest();
+				xmlHttpReq.open("GET", theUrl, false); 
+				xmlHttpReq.send(null);
+				return xmlHttpReq.responseText;
+			}
+			function display(status) {
+				file_name = status["file_name"];
+				download_status.innerHTML = `Downloading: ${file_name} </br> `
+				if(!status["canceled"]){
+					var size_total_mb =  status["total_size_mb"];
+					var size_downloaded_mb =  status["size_downloaded_mb"];
+					var percent_done = (size_downloaded_mb / size_total_mb) * 100
+					download_status.innerHTML  += `Done:${percent_done}% <br> ${size_downloaded_mb}/${size_total_mb} MB`
+				}
+				else{
+					download_status.innerHTML += "CANCELED!"
+				}
+			}
+			function update(){
+				const token = "{{token}}"
+				const response_string = httpGet(`../status?token=${token}`);
+				const response = JSON.parse(response_string);
+
+				if(response["error"]){
+					download_status.innerHTML = "ERROR";
+					return;
+				}
+				
+				const status = response["status"]
+				display(status)
+				if(status["finished"]){
+					if(!status["canceled"]){
+						file_name = status["file_name"];
+						window.location = `../downloads/${file_name}`;
+					}
+					clearInterval(id);
+				}
+			}
+			id = setInterval(update,1000);
+		</script>
+	</body>
+</html>
