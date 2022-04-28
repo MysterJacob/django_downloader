@@ -100,9 +100,8 @@ def status(request):
 def index(request):
 	url_to_file = request.GET.get("file_url",None)
 	token = request.GET.get("token","")
-
 	if not token in dw:
-		if url_to_file == None:
+		if url_to_file == None or url_to_file == "":
 			return HttpResponse("INVALID URL")
 		else:
 			return start_downloading(url_to_file,token,request)
