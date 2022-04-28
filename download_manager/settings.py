@@ -26,7 +26,7 @@ SECRET_KEY = secrets.token_hex(256) #'django-insecure-*0)8lcw21+l3lai7hgs-dj&u5g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
-ALLOWED_HOSTS = ["127.0.0.1"]
+ALLOWED_HOSTS = ["127.0.0.1","*"]
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
